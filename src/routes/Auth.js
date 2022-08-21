@@ -1,11 +1,12 @@
 import { authService } from "fBase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import React, { useState } from "react";
 
-export default () => {
+const Auth = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [newAccount, setNewAccount] = useState(true)
+  const [error, setError] = useState("")
   const onChange = (event) => {
     const { target: {name, value} } = event
     if (name === "email") {
@@ -25,12 +26,29 @@ export default () => {
       }
       console.log(data)
     } catch (err) {
-      console.error(err)
+      setError(err.message)
     }
+  }
+
+  const toggleAccount = () => { setNewAccount((prev) => !prev) }
+  const onSocialClick = async (event) => {
+    const { target: {name} } = event
+    let provider = ""
+    switch(name) {
+      case "github":
+        provider = new GithubAuthProvider()
+        break
+      case "google":
+        provider = new GoogleAuthProvider()
+        break
+      default: return
+    }
+    await signInWithPopup(authService, provider)
   }
 
   return (
     <div>
+      <button onClick={toggleAccount}>{newAccount? "to Log In" : "to Create Account"}</button>
       <form onSubmit={onSubmit}>
         <input
           type="email"
@@ -47,11 +65,14 @@ export default () => {
           onChange={onChange}
           value={password} />
         <input type="submit" value={newAccount? "Create Account" : "Log In"} />
+      <span className="error">{ error }</span>
       </form>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with GitHub</button>
+        <button name="google" onClick={onSocialClick}>Continue with Google</button>
+        <button name="github" onClick={onSocialClick}>Continue with GitHub</button>
       </div>
     </div>
   )
 }
+
+export default Auth
