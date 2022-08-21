@@ -24,7 +24,6 @@ const Auth = () => {
       } else {
         data = await signInWithEmailAndPassword(authService, email, password)
       }
-      console.log(data)
     } catch (err) {
       setError(err.message)
     }
