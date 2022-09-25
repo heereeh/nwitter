@@ -1,5 +1,6 @@
-import { dbService } from "fBase";
+import { dbService, storageService } from "fBase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 import React, { useState } from "react";
 
 const Nweet = ({nweetObj, isOwner}) => {
@@ -11,6 +12,7 @@ const Nweet = ({nweetObj, isOwner}) => {
     const ok = window.confirm("Are you sure you want to delete this nweet?")
     if (ok) {
       await deleteDoc(NweetTextRef)
+      await deleteObject(ref(storageService, nweetObj.attachmentUrl))
     }
   }
 
@@ -47,7 +49,10 @@ const Nweet = ({nweetObj, isOwner}) => {
           </form>
           </>
           :
-          <p>{nweetObj.text}</p>
+          <>
+            <p>{nweetObj.text}</p>
+            { nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} width="50px" height="50px" alt="" />}
+          </>
       }
       {isOwner && (
         <>
