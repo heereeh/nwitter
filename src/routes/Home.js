@@ -25,7 +25,7 @@ const Home = ({userObj}) => {
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    if (!nweet || !attachment) return
+    if (!nweet && !attachment) return
 
     let attachmentUrl = ""
     if (attachment) {

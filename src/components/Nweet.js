@@ -12,10 +12,11 @@ const Nweet = ({nweetObj, isOwner}) => {
     const ok = window.confirm("Are you sure you want to delete this nweet?")
     if (ok) {
       await deleteDoc(NweetTextRef)
-      await deleteObject(ref(storageService, nweetObj.attachmentUrl))
+      if (nweetObj.attachmentUrl) {
+        await deleteObject(ref(storageService, nweetObj.attachmentUrl))
+      }
     }
   }
-
   const toggleEditing = () => {
     if (editing) setNewNweet(nweetObj.text)
     setEditing((prev) => !prev)
