@@ -1,12 +1,19 @@
+import { CloseIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { Avatar, Box, Button, IconButton, Text, Textarea } from "@chakra-ui/react";
 import { dbService, storageService } from "fBase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const Nweet = ({nweetObj, isOwner}) => {
   const NweetTextRef = doc(dbService, "nweets", nweetObj.id)
   const [editing, setEditing] = useState(false)
   const [newNweet, setNewNweet] = useState(nweetObj.text)
+  const created = useMemo(() => {
+    const date = nweetObj.createdAt?.seconds
+    if (!date) return ""
+    return new Date(date * 1000).toUTCString()
+  })
 
   const onDeleteClick = async () => {
     const ok = window.confirm("Are you sure you want to delete this nweet?")
@@ -34,36 +41,39 @@ const Nweet = ({nweetObj, isOwner}) => {
   }
 
   return (
-    <div>
+    <Box borderWidth="1px" borderRadius="lg" display="flex" p="4" m="2">
+      <Box p="2">
+        <Avatar size="sm" p="1"/>
+      </Box>
+      <Box flex="1" p="2">
       {
         editing && isOwner?
           <>
           <form onSubmit={onSubmit}>
-            <input
-              type="text"
+            <Textarea
               placeholder="Edit your nweet"
               value={newNweet}
               required
               onChange={onChange}
               />
-            <input type="submit" value="Update Nweet"></input>
+            <Button size="sm" colorScheme="blue" type="submit">Update Nweet</Button>
           </form>
           </>
           :
           <>
-            <p>{nweetObj.text}</p>
+            <Text>{nweetObj.text}</Text>
             { nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} width="50px" height="50px" alt="" />}
+            <Text fontSize="xs">{created}</Text>
           </>
       }
+      </Box>
       {isOwner && (
         <>
-          <button onClick={toggleEditing}>
-            {editing? "Cancel" : "Update"}
-          </button>
-          <button onClick={onDeleteClick}>Delete</button>
+          <IconButton size="xs" borderRadius="10px" onClick={toggleEditing} icon={editing?<CloseIcon/>:<EditIcon/>}/>
+          <IconButton size="xs" borderRadius="10px" onClick={onDeleteClick} icon={<DeleteIcon/>}/>
         </>
       )}
-    </div>
+    </Box>
   )
 }
 

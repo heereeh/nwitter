@@ -1,3 +1,4 @@
+import { Button, Input } from "@chakra-ui/react";
 import { authService, dbService } from "fBase";
 import { updateProfile } from "firebase/auth";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
@@ -38,16 +39,16 @@ const Profile = ({ refreshUser, userObj }) => {
   return (
   <>
     <form onSubmit={onSubmit}>
-      <input
+      <Input
         onChange={onChange}
         value={newDisplayName}
         type="text"
         placeholder="Display Name" />
-      <input type="submit" value="Update Profile" />
+      <Button size="sm" type="submit">Update Profile</Button>
     </form>
-    <button onClick={onLogOutClick}>Log Out</button>
-    <button>Clear all my nweets</button>
-    <button>Resign</button>
+    <Button size="sm" onClick={onLogOutClick}>Log Out</Button>
+    <Button size="sm">Clear all my nweets</Button>
+    <Button size="sm">Resign</Button>
   </>
   )
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AppRouter from "components/Router";
 import { authService } from "fBase"
+import { Container } from "@chakra-ui/react";
 
 function App() {
   const [init, setInit] = useState(false)
@@ -29,10 +30,12 @@ function App() {
   }
   return (
     <>
+    <Container>
       { init? <AppRouter
         refreshUser={refreshUser}
         isLoggedIn={userObj !== null}
         userObj={userObj} /> : "Initializing..." }
+    </Container>
       <footer>&copy; {new Date().getFullYear()} Nwitter</footer>
     </>
   );
